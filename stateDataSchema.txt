@@ -1,0 +1,98 @@
+const stateDataSchema = Joi.object().keys({
+    _id: Joi.string().required(),
+    agent: Joi.object().keys({
+      account: Joi.object().keys({
+        homePage: Joi.string().required(),
+        name: Joi.string().regex(/^\d+$/).required(),
+      }),
+    }),
+    activityId: Joi.string()
+      .required()
+      .uri({
+        scheme: ['http', /http\+https?/],
+      }),
+    organisation: Joi.string().regex(/^\d+$/).required(),
+    stateId: Joi.string().required(),
+    content: Joi.object().keys({
+      completion_status: Joi.string().valid('', 'completed', 'incomplete', 'not attempted', 'unknown').required(),
+      completion_threshold: Joi.string().allow('').required(),
+      credit: Joi.string().valid('', 'credit', 'no-credit').required(),
+      entry: Joi.string().valid('', 'ab_initio', 'resume').required(),
+      exit: Joi.string().valid('', 'timeout', 'suspend', 'logout', 'normal').required(),
+      launch_data: Joi.string().allow('').required(),
+      learner_id: Joi.string().regex(/^\d+$/).required(),
+      learner_name: Joi.string().required(),
+      location: Joi.string().allow('').required(),
+      max_time_allowed: Joi.string().allow('').required(),
+      mode: Joi.string().valid('browse', 'normal', 'review').required(),
+      progress_measure: Joi.string().allow('').regex(/^\d+$/).required(),
+      scaled_passing_score: Joi.string()
+        .allow('')
+        .regex(/^-?[0-9]\d*(\.\d+)?$/)
+        .required(),
+      session_time: Joi.string().allow('').required(),
+      success_status: Joi.string().valid('passed', 'failed', 'unknown', 'logout', 'normal').required(),
+      suspend_data: Joi.string().required(),
+      call_certificate: Joi.string().allow('').required(),
+      time_limit_action: Joi.string().valid('exit,message', 'continue,message', 'unknexit,no messageown', 'continue,no message').required(),
+      total_time: Joi.string().required(),
+      comments_from_learner: Joi.object().keys({
+        childArray: Joi.array(),
+      }),
+      comments_from_lms: Joi.object().keys({
+        childArray: Joi.array(),
+      }),
+      // TO DO: below possibly needs to be built out further, check with Miran
+      interactions: Joi.object().keys({
+        childArray: Joi.array(),
+      }),
+      learner_preference: Joi.object().keys({
+        audio_level: Joi.string()
+          .regex(/^-?[0-9]\d*(\.\d+)?$/)
+          .required(),
+        language: Joi.string().allow('').required(),
+        delivery_speed: Joi.string().regex(/^\d+$/).required(),
+        audio_captioning: Joi.string().regex(/^\d+$/).required(),
+      }),
+      // TO DO: below possibly needs to be built out further, check with Miran
+      objectives: Joi.object().keys({
+        childArray: Joi.array(),
+      }),
+      score: Joi.object().keys({
+        scaled: Joi.string()
+          .allow('')
+          .regex(/^-?[0-9]\d*(\.\d+)?$/)
+          .required(),
+        raw: Joi.number().required(),
+        min: Joi.string().allow('').regex(/^\d+$/).required(),
+        max: Joi.string().allow('').regex(/^\d+$/).required(),
+      }),
+      fromLmsCommit: Joi.boolean().required(),
+      queryParams: Joi.object().keys({
+        systemId: Joi.string().regex(/^\d+$/).required(),
+        host: Joi.string().required(),
+        sessionId: Joi.string().required(),
+        navigatorObj: Joi.string().required(),
+      }),
+      previousLessonStatus: Joi.string().allow('').valid('', 'completed', 'incomplete', 'not attempted', 'unknown').required(),
+      previousSuccessStatus: Joi.string().allow('').valid('passed', 'failed', 'unknown', 'logout', 'normal').required(),
+      isScorm: Joi.boolean().required(),
+      scormType: Joi.string().valid('scorm2004', 'scorm1.2').required(),
+      timeStamp: Joi.date().iso().required(),
+      sessionId: Joi.string().required(),
+      allowMultipleCompletions: Joi.number().required(),
+      siteName: Joi.string().required(),
+      userId: Joi.string().regex(/^\d+$/).required(),
+      apiTime: Joi.date().iso().required(),
+      siteId: Joi.number().required(),
+      systemId: Joi.string().regex(/^\d+$/).required(),
+      activityId: Joi.string()
+        .required()
+        .uri({
+          scheme: ['http', /http\+https?/],
+        }),
+      cumulativeTimeSpent: Joi.number().required(),
+    }),
+    createdAt: Joi.date().iso().required(),
+    updatedAt: Joi.date().iso().required(),
+  });
