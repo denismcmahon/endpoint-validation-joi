@@ -3,6 +3,7 @@ const express = require('express');
 const logger = require('morgan');
 const sanitizeHtml = require('sanitize-html');
 const Joi = require('joi');
+const schemaValidation = require('./validation/schemaValidation.js');
 
 const bodyParser = require('body-parser');
 
@@ -17,41 +18,10 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-const customJoi = Joi.extend((joi) => ({
-  type: 'string',
-  base: joi.string(),
-  messages: {
-    'string.htmlStrip': '{{#label}} not contain any html tags',
-  },
-  rules: {
-    htmlStrip: {
-      validate(value, helpers) {
-        const clean = sanitizeHtml(value, {
-          allowedTags: [],
-          allowedAttributes: {},
-        });
-        if (clean == value) {
-          return clean;
-        }
-        return helpers.error('string.htmlStrip');
-      },
-    },
-  },
-}));
-
 app.post('/simpletest', async (req, res, next) => {
   const id = Math.ceil(Math.random() * 9999999);
 
-  const schema = customJoi.object().keys({
-    learner_id: customJoi
-      .string()
-      .htmlStrip()
-      .regex(/^-?[0-9]\d*(\.\d+)?$/)
-      .required(),
-    firstname: customJoi.string().htmlStrip().allow('').required(),
-  });
-
-  schema
+  schemaValidation.schema
     .validateAsync(req.body)
     .then(() =>
       res.status(200).json({
